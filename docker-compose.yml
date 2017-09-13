@@ -1,0 +1,25 @@
+version: '3'
+services:
+    striim-metadatarepo:
+        image: "striim.azurecr.io/striim/striim-mdr"
+        ports:
+            - 1527:1527    
+        volumes:
+            - striim-data:/var/striim    
+
+    striim-node:
+        image: "striim.azurecr.io/striim/striim-node"
+        ports:
+            - "9080"
+        env_file:
+            - striim-node.env
+        environment:
+            STRIIM_METADATAREPO_ADDR: striim-metadatarepo:1527
+        volumes:
+            - ./extlib:/opt/striim/extlib   
+            - striim-data:/var/striim 
+
+                
+            
+volumes:
+    striim-data:        
