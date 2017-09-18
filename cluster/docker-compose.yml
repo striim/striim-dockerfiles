@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
     striim-metadatarepo:
         image: "striim.azurecr.io/striim/striim-mdr"
