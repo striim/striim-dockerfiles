@@ -11,6 +11,8 @@ services:
         image: "striim.azurecr.io/striim/striim-node"
         ports:
             - "9080"
+        depends_on:
+            - "striim-metadatarepo"
         env_file:
             - striim-node.env
         environment:
