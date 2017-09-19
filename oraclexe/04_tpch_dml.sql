@@ -154,4 +154,7 @@ spool off
 set timing on
 spool constraints.log
  
-spool off
+spool off;
+
+exit;
+
