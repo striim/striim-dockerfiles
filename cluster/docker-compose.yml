@@ -20,8 +20,10 @@ services:
         volumes:
             - ./extlib:/opt/striim/extlib   
             - striim-data:/var/striim 
+            - striim-waction:/opt/striim/data  
 
                 
             
 volumes:
     striim-data:        
+    striim-waction:      
