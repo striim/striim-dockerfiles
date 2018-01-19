@@ -8,8 +8,11 @@ to get access to the docker images
 # Supported Deployment 
 ## oraclexe
 Allows running an Oracle XE 11G database with scripts to turn on audit log
-## Cluster
-Brings up a striim cluster with ability to scale up/down striim nodes 
+## cluster
+Brings up a striim cluster with ability to scale up/down striim nodes with inbuilt metadata repository
+## cluster-with-external-mdr
+Brings up a striim cluster with ability to use an Oracle or Postgres as Metadata repository
+
 
 # Testing status
 This has only been tested with docker on linux.
