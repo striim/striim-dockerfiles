@@ -1,14 +1,14 @@
 version: '2'
 services:
     striim-metadatarepo:
-        image: "striim.azurecr.io/striim/striim-mdr"
+        image: "striim.azurecr.io/striim/striim-mdr:3.7.4C"
         ports:
             - 1527:1527    
         volumes:
             - striim-data:/var/striim    
 
     striim-node:
-        image: "striim.azurecr.io/striim/striim-node"
+        image: "striim.azurecr.io/striim/striim-node:3.7.4C"
         ports:
             - "9080"
         depends_on:
@@ -18,7 +18,7 @@ services:
         environment:
             STRIIM_METADATAREPO_ADDR: striim-metadatarepo:1527
         volumes:
-            - ./extlib:/opt/striim/extlib   
+            - /Users/rajeshnair/projects/striim/striim-dockerfiles/cluster/extlib:/opt/striim/extlib   
             - striim-data:/var/striim 
             - striim-waction:/opt/striim/data  
 

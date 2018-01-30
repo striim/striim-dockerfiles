@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: striim-evalversion
+  name: striim-evalversion
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: striim-evalversion
+    spec:
+      containers:
+      - env:
+        - name: STRIIM_ACCEPT_EULA
+          value: Y
+        image: striim/evalversion:latest
+        name: striim-evalversion
+        ports:
+        - containerPort: 9080
+        resources: {}
+      restartPolicy: Always
+status: {}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: striim-evalversion
+  name: striim-evalversion
+spec:
+  type: LoadBalancer   
+  ports:
+  - name: "9080"
+    port: 9080
+    targetPort: 9080
+  selector:
+    io.kompose.service: striim-evalversion
+status:
+  loadBalancer: {}

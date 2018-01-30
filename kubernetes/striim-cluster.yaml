@@ -1,0 +1,188 @@
+apiVersion: v1
+data:
+  #MODIFY this with the secret obtained by sales team
+  .dockerconfigjson: GET_FROM_SUPPORT_AT_SALES_DOT_COM 
+kind: Secret
+metadata:
+  creationTimestamp: 2018-01-26T13:44:33Z
+  name: striimimagesecret
+  namespace: default
+  resourceVersion: "7983"
+  selfLink: /api/v1/namespaces/default/secrets/striimimagesecret
+  uid: 0a6489ca-029f-11e8-8dfa-b2067b06cf32
+type: kubernetes.io/dockerconfigjson
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-data
+  name: striim-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-waction
+  name: striim-waction
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-metadatarepo
+  name: striim-metadatarepo
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: striim-metadatarepo
+    spec:
+      containers:
+      - image: striim.azurecr.io/striim/striim-mdr:3.7.4C
+        name: striim-metadatarepo
+        ports:
+        - containerPort: 1527
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/striim
+          name: striim-data
+      restartPolicy: Always
+      volumes:
+      - name: striim-data
+        persistentVolumeClaim:
+          claimName: striim-data
+      imagePullSecrets:
+      - name: striimimagesecret
+status: {}
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-node
+  name: striim-node
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: striim-node
+    spec:
+      containers:
+      - env:
+        - name: STRIIM_ADMIN_PASSWORD
+          value: adminpass
+        - name: STRIIM_CLUSTER_NAME
+          value: dockerizedstriimcluster
+        - name: STRIIM_CLUSTER_PASSWORD
+          value: clusterpass
+        - name: STRIIM_COMPANY_NAME
+          # Modify this with company recieved from Sales team
+          value: AcmeCompany
+        - name: STRIIM_LICENSE_KEY
+          # Modify this with license key received from Sales team
+          value: GET_FROM_SUPPORT_AT_SALES_DOT_COM 
+        - name: STRIIM_METADATAREPO_ADDR
+          value: striim-metadatarepo:1527
+        - name: STRIIM_PRODUCT_KEY
+          # Modify this with product key recieved from Sales team
+          value: GET_FROM_SUPPORT_AT_SALES_DOT_COM
+        - name: STRIIM_METADATAREPO_DB
+          value: derby
+        image: striim.azurecr.io/striim/striim-node:3.7.4C
+        name: striim-node
+        ports:
+        - containerPort: 9080
+        resources: {}
+        volumeMounts:
+        - mountPath: /opt/striim/extlib
+          name: striim-extlib
+        - mountPath: /var/striim
+          name: striim-data
+        - mountPath: /opt/striim/data
+          name: striim-waction
+      restartPolicy: Always
+      volumes:
+      - name: striim-extlib
+        hostPath:
+          #Modify this with the directory containing jdbc jars
+          path: /path/containing/jdbc/jars
+          type: Directory  
+      - name: striim-data
+        persistentVolumeClaim:
+          claimName: striim-data
+      - name: striim-waction
+        persistentVolumeClaim:
+          claimName: striim-waction
+      imagePullSecrets:
+      - name: striimimagesecret
+status: {}
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-metadatarepo
+  name: striim-metadatarepo
+spec:
+  ports:
+  - name: "1527"
+    port: 1527
+    targetPort: 1527
+  selector:
+    io.kompose.service: striim-metadatarepo
+status:
+  loadBalancer: {}
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-node
+  name: striim-node
+spec:
+  type: LoadBalancer   
+  ports:
+  - name: "9080"
+    port: 9080
+    targetPort: 9080
+  selector:
+    io.kompose.service: striim-node
+status:
+  loadBalancer: {}
+
+
