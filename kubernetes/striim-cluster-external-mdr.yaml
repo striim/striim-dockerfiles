@@ -88,7 +88,7 @@ spec:
           value: waction
         - name: STRIIM_METADATAREPO_PWD
           value: DBPASS
-        image: striim.azurecr.io/striim/striim-node:3.7.4C
+        image: striim.azurecr.io/striim/striim-node:3.8.2
         name: striim-node
         ports:
         - containerPort: 9080
