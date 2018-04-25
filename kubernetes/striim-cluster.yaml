@@ -62,7 +62,7 @@ spec:
         io.kompose.service: striim-metadatarepo
     spec:
       containers:
-      - image: striim.azurecr.io/striim/striim-mdr:3.8.2A
+      - image: striim.azurecr.io/striim/striim-mdr:latest
         name: striim-metadatarepo
         ports:
         - containerPort: 1527
@@ -118,7 +118,7 @@ spec:
           value: GET_FROM_SUPPORT_AT_SALES_DOT_COM
         - name: STRIIM_METADATAREPO_DB
           value: derby
-        image: striim.azurecr.io/striim/striim-node:3.8.2A
+        image: striim.azurecr.io/striim/striim-node:latest
         name: striim-node
         ports:
         - containerPort: 9080

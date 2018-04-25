@@ -2,7 +2,7 @@ version: '2'
 services:
 
     striim-node:
-        image: "striim.azurecr.io/striim/striim-node:3.8.2A"
+        image: "striim.azurecr.io/striim/striim-node:latest"
         ports:
             - "9080"
         env_file:
