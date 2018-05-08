@@ -118,6 +118,8 @@ spec:
           value: GET_FROM_SUPPORT_AT_SALES_DOT_COM
         - name: STRIIM_METADATAREPO_DB
           value: derby
+        - name: STRIIM_MAX_MEMORY
+          value: 4096m
         image: striim.azurecr.io/striim/striim-node:latest
         name: striim-node
         ports:

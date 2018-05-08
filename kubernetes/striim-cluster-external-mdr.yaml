@@ -88,6 +88,8 @@ spec:
           value: waction
         - name: STRIIM_METADATAREPO_PWD
           value: DBPASS
+        - name: STRIIM_MAX_MEMORY
+          value: 4096m
         image: striim.azurecr.io/striim/striim-node:latest
         name: striim-node
         ports:

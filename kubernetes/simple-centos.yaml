@@ -1,0 +1,49 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: simple-centos
+  name: simple-centos
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: simple-centos
+    spec:
+      containers:
+      - env:
+        - name: STRIIM_ADMIN_PASSWORD
+          value: adminpass
+        image: "centos:7"
+        name: simple-centos
+        command: ["lscpu"]  
+        ports:
+        - containerPort: 9080
+      restartPolicy: Always
+status: {}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: simple-centos
+  name: simple-centos
+spec:
+  type: LoadBalancer   
+  ports:
+  - name: "9080"
+    port: 9080
+    targetPort: 9080
+  selector:
+    io.kompose.service: simple-centos
+status:
+  loadBalancer: {}
+
