@@ -121,7 +121,7 @@ spec:
         - name: STRIIM_MAX_MEMORY
           value: 4096m
         - name: STRIIM_TRACK_FLM
-          value: false
+          value: "false"
         image: striim.azurecr.io/striim/striim-node:latest
         name: striim-node
         ports:
