@@ -93,7 +93,7 @@ spec:
         - name: STRIIM_TRACK_FLM
           value: "false"
         - name: STRIIM_EVICTTHRESHOLD
-	  value: 25
+          value: 25
         image: striim.azurecr.io/striim/striim-node:latest
         name: striim-node
         ports:
