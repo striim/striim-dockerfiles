@@ -92,7 +92,7 @@ spec:
           value: 4096m
         - name: STRIIM_TRACK_FLM
           value: "false"
-	- name: STRIIM_EVICTTHRESHOLD
+        - name: STRIIM_EVICTTHRESHOLD
 	  value: 25
         image: striim.azurecr.io/striim/striim-node:latest
         name: striim-node
