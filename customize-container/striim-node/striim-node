@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Striim Cluster Node
+#
+
+cd "/opt/striim"
+
+if [[ "$1" == "start" ]]; then
+    export NO_DERBY=1
+    if [ -f /opt/striim/conf/startUp.properties ]; then
+      /opt/striim/bin/createStriimProperties.sh
+    fi
+    export CLASSPATH="/opt/striim/extlib/*"
+    echo -e "\n\n\n" | `dirname $0`/../bin/server.sh ${WA_OPTS}
+fi

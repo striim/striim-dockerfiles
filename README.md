@@ -14,9 +14,11 @@ Docker compose for bringing up a striim cluster with ability to scale up/down st
 Docker compose for bringing up striim cluster with ability to use an Oracle or Postgres as Metadata repository
 ## kubernetes
 kubernetes config files for various scenarios
+## Build your custom Striim Node and DBMS containers
+~/src/striim-dockerfiles/customize-container$ docker build --no-cache=true --build-arg STRIIM_NODE_URL=<http-url-to-download-striim-node-rpm> -t <custom-node-image-name> ./striim-node
+~/src/striim-dockerfiles/customize-container$ docker build --no-cache=true --build-arg STRIIM_DBMS_URL=<http-url-to-download-striim-dbms-rpm> -t <custom-dbms-image-name> ./striim-dbms
 
 
 # Testing status
 This has only been tested with docker on linux.
 Not tested with docker on mac and windows
-
