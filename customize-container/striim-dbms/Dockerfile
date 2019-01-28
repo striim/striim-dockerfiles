@@ -5,7 +5,7 @@
 ##############################################
 
 FROM striim/basejdk:latest
-MAINTAINER Striim Support "support@striim.com"
+LABEL maintainer="support@striim.com"
 
 ARG STRIIM_DBMS_URL
 
