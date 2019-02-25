@@ -9,6 +9,7 @@ LABEL maintainer="support@striim.com"
 
 ARG STRIIM_NODE_URL
 
+RUN yum -y install vim
 
 # Download and install striim-node
 RUN cd /tmp && wget --quiet --no-check-certificate -O striim-node.rpm "$STRIIM_NODE_URL" \
