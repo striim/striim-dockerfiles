@@ -18,7 +18,7 @@ RUN cd /tmp && wget --quiet --no-check-certificate -O striim-node.rpm "$STRIIM_N
 
 COPY createStriimProperties.sh /opt/striim/bin/createStriimProperties.sh
 COPY striim-node /opt/striim/sbin/striim-node
-COPY log4j.server.properties /opt/striim/conf/log4j.server.properties
+COPY log4j.server.tmpl.properties /opt/striim/conf/log4j.server.tmpl.properties
  
 ENV STRIIM_METADATAREPO_DB      "derby"
 ENV STRIIM_METADATAREPO_ADDR    "172.17.0.2:1527"
