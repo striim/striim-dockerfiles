@@ -17,6 +17,7 @@ RUN cd /tmp && wget --quiet --no-check-certificate -O striim-node.rpm "$STRIIM_N
     && rm -rf striim-node.rpm
 
 COPY createStriimProperties.sh /opt/striim/bin/createStriimProperties.sh
+COPY createLog4jServerProps.sh /opt/striim/bin/createLog4jServerProps.sh
 COPY striim-node /opt/striim/sbin/striim-node
 COPY log4j.server.tmpl.properties /opt/striim/conf/log4j.server.tmpl.properties
  
