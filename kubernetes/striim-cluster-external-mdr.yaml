@@ -69,8 +69,6 @@ spec:
           value: adminpass
         - name: STRIIM_CLUSTER_NAME
           value: dockerizedstriimcluster
-        - name: STRIIM_CLUSTER_PASSWORD
-          value: clusterpass
         - name: STRIIM_COMPANY_NAME
           # Modify this with company recieved from Sales team
           value: AcmeCompany
@@ -88,6 +86,10 @@ spec:
           value: waction
         - name: STRIIM_METADATAREPO_PWD
           value: DBPASS
+        - name: STRIIM_SYSTEM_PASSWORD
+          value: systempass
+        - name: STRIIM_KEYSTORE_PASSWORD
+          value: keystorepass
         - name: STRIIM_MAX_MEMORY
           value: 4096m
         - name: STRIIM_TRACK_FLM
