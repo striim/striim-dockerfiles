@@ -4,13 +4,9 @@ STRIIM_CONF_FILE="/opt/striim/conf/startUp.properties"
 if [[ ! -z "${STRIIM_CLUSTER_NAME}" ]]; then
   echo "WAClusterName=${STRIIM_CLUSTER_NAME}" >>$STRIIM_CONF_FILE
 fi
-if [[ ! -z "${STRIIM_CLUSTER_PASSWORD}" ]]; then
-  STRIIM_CLUSTER_PASSWORD=`/opt/striim/bin/passwordEncryptor.sh ${STRIIM_CLUSTER_PASSWORD}`
-  echo "WAClusterPassword=${STRIIM_CLUSTER_PASSWORD}"  >>$STRIIM_CONF_FILE
-fi
-if [[ ! -z "${STRIIM_ADMIN_PASSWORD}" ]]; then
-  STRIIM_ADMIN_PASSWORD=`/opt/striim/bin/passwordEncryptor.sh ${STRIIM_ADMIN_PASSWORD}`
-  echo "WAAdminPassword=${STRIIM_ADMIN_PASSWORD}" >>$STRIIM_CONF_FILE
+
+if [[ ! -z "${STRIIM_ADMIN_PASSWORD}" ]] && [[ ! -z "${STRIIM_METADATAREPO_PWD}" ]] && [[ ! -z "${STRIIM_SYSTEM_PASSWORD}" ]] && [[ ! -z "${STRIIM_KEYSTORE_PASSWORD}" ]]; then
+  STRIIM_PASSWORDS=`/opt/striim/bin/sksConfig.sh -a ${STRIIM_ADMIN_PASSWORD} -s ${STRIIM_SYSTEM_PASSWORD} -t ${STRIIM_METADATAREPO_DB} -p ${STRIIM_METADATAREPO_PWD} -k ${STRIIM_KEYSTORE_PASSWORD}`
 fi
 if [[ ! -z "${STRIIM_COMPANY_NAME}" ]]; then
   echo "CompanyName=${STRIIM_COMPANY_NAME}" >>$STRIIM_CONF_FILE
@@ -27,10 +23,6 @@ if [[ ! -z "${STRIIM_METADATAREPO_DB}" ]]; then
 fi
 if [[ ! -z "${STRIIM_METADATAREPO_ADDR}" ]]; then
   echo "MetaDataRepositoryLocation=${STRIIM_METADATAREPO_ADDR}" >>$STRIIM_CONF_FILE
-fi
-if [[ ! -z "${STRIIM_METADATAREPO_PWD}" ]]; then
-  STRIIM_METADATAREPO_PWD=`/opt/striim/bin/passwordEncryptor.sh ${STRIIM_METADATAREPO_PWD}`
-  echo "MetaDataRepositoryPass=${STRIIM_METADATAREPO_PWD}" >>$STRIIM_CONF_FILE
 fi
 if [[ ! -z "${STRIIM_METADATAREPO_USER}" ]]; then
   echo "MetaDataRepositoryUname=${STRIIM_METADATAREPO_USER}" >>$STRIIM_CONF_FILE
