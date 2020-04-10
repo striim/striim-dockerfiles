@@ -2,7 +2,7 @@
 
 Docker images along with docker-compose scripts for deploying and running Striim Platform.
 
-Pre-built images are available Docker Hub. Please contact support@striim.com
+Pre-built images are available on Docker Hub. Please contact support@striim.com
 if you run in to any issues with the docker images.
 
 ## Supported Deployment 
