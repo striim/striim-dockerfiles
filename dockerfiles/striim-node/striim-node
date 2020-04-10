@@ -10,6 +10,9 @@ if [[ "$1" == "start" ]]; then
     if [ -f /opt/striim/conf/startUp.properties ]; then
       /opt/striim/bin/createStriimProperties.sh
     fi
+    if [ ! -f /opt/striim/conf/log4j.server.properties ]; then
+      /opt/striim/bin/createLog4jServerProps.sh
+    fi
     export CLASSPATH="/opt/striim/extlib/*"
     echo -e "\n\n\n" | `dirname $0`/../bin/server.sh ${WA_OPTS}
 fi
