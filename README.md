@@ -2,8 +2,8 @@
 
 Docker images along with docker-compose scripts for deploying and running Striim Platform.
 
-Pre-built images are available in private Azure Container Registry. Please contact support@striim.com
-to get access to the docker images.
+Pre-built images are available Docker Hub. Please contact support@striim.com
+if you run in to any issues with the docker images.
 
 ## Supported Deployment 
 

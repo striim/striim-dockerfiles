@@ -1,14 +1,14 @@
 version: '2'
 services:
     striim-metadatarepo:
-        image: "striim.azurecr.io/striim/striim-mdr:latest"
+        image: "striim/striim-dbms:latest"
         ports:
             - 1527:1527    
         volumes:
             - striim-data:/var/striim    
 
     striim-node:
-        image: "striim.azurecr.io/striim/striim-node:latest"
+        image: "striim/striim-node:latest"
         ports:
             - "9080"
         depends_on:

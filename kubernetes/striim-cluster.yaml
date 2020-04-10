@@ -62,7 +62,7 @@ spec:
         io.kompose.service: striim-metadatarepo
     spec:
       containers:
-      - image: striim.azurecr.io/striim/striim-mdr:latest
+      - image: striim/striim-dbms:latest
         name: striim-metadatarepo
         ports:
         - containerPort: 1527
@@ -126,7 +126,7 @@ spec:
           value: "false"
         - name: STRIIM_EVICTTHRESHOLD
           value: 25
-        image: striim.azurecr.io/striim/striim-node:latest
+        image: striim/striim-node:latest
         name: striim-node
         ports:
         - containerPort: 9080

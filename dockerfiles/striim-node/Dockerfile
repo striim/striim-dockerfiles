@@ -4,17 +4,19 @@
 #
 ##############################################
 
-FROM striim/basejdk:latest
+FROM openjdk:8
 LABEL maintainer="support@striim.com"
 
 ARG STRIIM_NODE_URL
 
-RUN yum -y install vim
+# Downlaod and install vim
+RUN apt-get update \
+    && apt-get -y install vim
 
 # Download and install striim-node
-RUN cd /tmp && wget --quiet --no-check-certificate -O striim-node.rpm "$STRIIM_NODE_URL" \
-    && rpm -i striim-node.rpm \
-    && rm -rf striim-node.rpm
+RUN cd /tmp && wget --quiet --no-check-certificate -O striim-node.deb "$STRIIM_NODE_URL" \
+    && dpkg -i striim-node.deb \
+    && rm -rf striim-node.deb
 
 COPY createStriimProperties.sh /opt/striim/bin/createStriimProperties.sh
 COPY createLog4jServerProps.sh /opt/striim/bin/createLog4jServerProps.sh
