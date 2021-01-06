@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# Striim DBMS
+#
+ 
+EXPECTED_WRITE_INTERVAL_SECONDS=10
+DERBY_JAR=/var/striim/derby/lib/derbyrun.jar
+STRIIM_LOG_DIR=/var/log/striim
+FILE=${STRIIM_LOG_DIR}/striim-dbms.log
+
+
+if [ ! -f "${DERBY_JAR}" ]; then
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Striim DBMS not installed, installing Striim DBMS..."
+   # Install striim-dbms
+   sudo dpkg -i /tmp/"striim-dbms-${STRIIM_RPM_TAG}-Linux.deb" && sudo rm -rf /tmp/"striim-dbms-${STRIIM_RPM_TAG}-Linux.deb"
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Installed Striim DBMS."
+else
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Found existing install, starting Striim DBMS."
+   if [ ! -d ${STRIIM_LOG_DIR} ]; then
+       sudo mkdir ${STRIIM_LOG_DIR} ; sudo chown -R striim:striim ${STRIIM_LOG_DIR}
+   fi
+fi
+   
+cd /var/striim
+
+date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+echo "$date : Launching Striim DBMS..."
+
+java -Dderby.stream.error.file=/var/log/striim/striim-dbms.log -jar derby/lib/derbyrun.jar server start -h 0.0.0.0 -noSecurityManager &> /var/log/striim/striim-dbms.log &
+      
+while : ; do
+    date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+    echo "$date : Waiting for derby to start."
+    
+    omod=$(stat -c %Y $FILE)
+        
+    sleep $EXPECTED_WRITE_INTERVAL_SECONDS
+    nmod=$(stat -c %Y $FILE)
+        
+    if [[ $omod == $nmod ]] ; then
+        break
+    fi
+done
+
+tail -f $FILE

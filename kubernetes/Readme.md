@@ -43,6 +43,12 @@ $ kubectl cluster-info
 Please check for configuration marked with Modify . Some of these values would be recieved with your license 
 Some of them are specific to your environment
 
+* Create Secrets for the pods
+````
+$ kubectl create secret generic striim-secret --from-literal='admin_password=<CHANGE_ME>' --from-literal='db_password=GET_FROM_SUPPORT_AT_STRIIM_DOT_COM' --from-literal='keystore_password=<CHANGE_ME>' --from-literal='system_password=<CHANGE_ME>'
+````
+
+
 ## Start striim service
 
 * Create all kubernetes resources (volumes, deployment, services). You will find three config files. Striim evaluation version , Striim prod images with inbuilt MDR and Striim prod images with external MDR
