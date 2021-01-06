@@ -1,29 +1,45 @@
-version: '2'
+version: '3.8'
 services:
     striim-metadatarepo:
-        image: "striim/striim-dbms:latest"
+        image: "docker.io/striim/striim-dbms:latest"
         ports:
-            - 1527:1527    
+            - 1527:1527
         volumes:
-            - striim-data:/var/striim    
+            - striim-mdr:/var/striim
 
     striim-node:
-        image: "striim/striim-node:latest"
-        ports:
-            - "9080"
+        image: "docker.io/striim/striim-node:latest"
         depends_on:
-            - "striim-metadatarepo"
+            - striim-metadatarepo
+        ports:
+            - 9080
         env_file:
             - striim-node.env
         environment:
             STRIIM_METADATAREPO_ADDR: striim-metadatarepo:1527
+        secrets:
+            - admin_password
+            - db_password
+            - keystore_password
+            - system_password
         volumes:
-            - ./extlib:/opt/striim/extlib
-            - striim-data:/var/striim 
-            - striim-waction:/opt/striim/data  
+            - striim-extdata:/opt/striim/data
+            - striim-extlibs:/opt/striim/extlib
+            - striim-extes:/opt/striim/elasticsearch
+#            - ./striim-conf/startUp.properties:/opt/striim/conf/startUp.properties.updated
 
-                
+secrets:
+   admin_password:
+     file: ./admpw
+   db_password:
+     file: ./dbpw
+   keystore_password:
+     file: ./kspw
+   system_password:
+     file: ./syspw
             
 volumes:
-    striim-data:        
-    striim-waction:      
+    striim-extdata:
+    striim-extlibs:
+    striim-extes:
+    striim-mdr:    

@@ -1,25 +1,55 @@
 apiVersion: v1
-data:
-  #MODIFY this with the secret obtained by sales team
-  .dockerconfigjson: GET_FROM_SUPPORT_AT_SALES_DOT_COM 
-kind: Secret
+kind: PersistentVolumeClaim
 metadata:
-  creationTimestamp: 2018-01-26T13:44:33Z
-  name: striimimagesecret
-  namespace: default
-  resourceVersion: "7983"
-  selfLink: /api/v1/namespaces/default/secrets/striimimagesecret
-  uid: 0a6489ca-029f-11e8-8dfa-b2067b06cf32
-type: kubernetes.io/dockerconfigjson
-
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-extdata-claim
+  name: striim-extdata-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: striim-data
-  name: striim-data
+    io.kompose.service: striim-extes-claim
+  name: striim-extes-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-extlib-claim
+  name: striim-extlib-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: striim-mdr-claim
+  name: striim-mdr-claim
 spec:
   accessModes:
   - ReadWriteOnce
@@ -29,22 +59,7 @@ spec:
 status: {}
 ---
 
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  creationTimestamp: null
-  labels:
-    io.kompose.service: striim-waction
-  name: striim-waction
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
-status: {}
----
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
@@ -52,6 +67,9 @@ metadata:
     io.kompose.service: striim-metadatarepo
   name: striim-metadatarepo
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: striim-metadatarepo
   replicas: 1
   strategy:
     type: Recreate
@@ -62,25 +80,24 @@ spec:
         io.kompose.service: striim-metadatarepo
     spec:
       containers:
-      - image: striim/striim-dbms:latest
+      # Modify this to an actual Striim Release Version
+      - image: docker.io/striim/striim-dbms:CHANGE_TO_STRIIM_VERSION
         name: striim-metadatarepo
         ports:
         - containerPort: 1527
         resources: {}
         volumeMounts:
         - mountPath: /var/striim
-          name: striim-data
+          name: striim-mdr-storage
       restartPolicy: Always
       volumes:
-      - name: striim-data
+      - name: striim-mdr-storage
         persistentVolumeClaim:
-          claimName: striim-data
-      imagePullSecrets:
-      - name: striimimagesecret
+          claimName: striim-mdr-claim
 status: {}
 ---
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   creationTimestamp: null
@@ -88,6 +105,9 @@ metadata:
     io.kompose.service: striim-node
   name: striim-node
 spec:
+  selector:
+    matchLabels:
+      io.kompose.service: striim-node
   replicas: 1
   strategy:
     type: Recreate
@@ -99,60 +119,62 @@ spec:
     spec:
       containers:
       - env:
-        - name: STRIIM_ADMIN_PASSWORD
-          value: adminpass
         - name: STRIIM_CLUSTER_NAME
-          value: dockerizedstriimcluster
+          value: "dockerizedstriimcluster"
         - name: STRIIM_COMPANY_NAME
           # Modify this with company recieved from Sales team
-          value: AcmeCompany
+          value: "AcmeCompany"
         - name: STRIIM_LICENSE_KEY
           # Modify this with license key received from Sales team
-          value: GET_FROM_SUPPORT_AT_SALES_DOT_COM 
+          value: "GET_FROM_SUPPORT_AT_SALES_DOT_COM"
         - name: STRIIM_METADATAREPO_ADDR
           value: striim-metadatarepo:1527
         - name: STRIIM_PRODUCT_KEY
           # Modify this with product key recieved from Sales team
-          value: GET_FROM_SUPPORT_AT_SALES_DOT_COM
+          value: "GET_FROM_SUPPORT_AT_SALES_DOT_COM"
         - name: STRIIM_METADATAREPO_DB
-          value: derby
-        - name: STRIIM_SYSTEM_PASSWORD
-          value: systempass
-        - name: STRIIM_KEYSTORE_PASSWORD
-          value: keystorepass
+          value: "derby"
         - name: STRIIM_MAX_MEMORY
-          value: 4096m
+          value: "4096m"
+        - name: STRIIM_L4J_ROOT_LOGGER
+          value: "warn"
+        - name: STRIIM_L4J_MAX_FILE_SIZE
+          value: "100MB"
+        - name: STRIIM_L4J_MAX_BACKUP_IDX
+          value: "4"
         - name: STRIIM_TRACK_FLM
           value: "false"
         - name: STRIIM_EVICTTHRESHOLD
-          value: 25
-        image: striim/striim-node:latest
+          value: "25"
+        # Modify this to an actual Striim Release Version
+        image: docker.io/striim/striim-node:CHANGE_TO_STRIIM_VERSION
         name: striim-node
         ports:
         - containerPort: 9080
         resources: {}
         volumeMounts:
         - mountPath: /opt/striim/extlib
-          name: striim-extlib
-        - mountPath: /var/striim
-          name: striim-data
+          name: striim-extlib-storage
         - mountPath: /opt/striim/data
-          name: striim-waction
+          name: striim-extdata-storage
+        - mountPath: /opt/striim/elasticsearch
+          name: striim-extes-storage
+        - name: secret-volume
+          mountPath: /etc/secret-volume
       restartPolicy: Always
       volumes:
-      - name: striim-extlib
-        hostPath:
-          #Modify this with the directory containing jdbc jars
-          path: /path/containing/jdbc/jars
-          type: Directory  
-      - name: striim-data
+      - name: striim-extlib-storage
         persistentVolumeClaim:
-          claimName: striim-data
-      - name: striim-waction
+          claimName: striim-extlib-claim
+      - name: striim-extdata-storage
         persistentVolumeClaim:
-          claimName: striim-waction
-      imagePullSecrets:
-      - name: striimimagesecret
+          claimName: striim-extdata-claim
+      - name: striim-extes-storage
+        persistentVolumeClaim:
+          claimName: striim-extes-claim
+      - name: secret-volume
+        secret:
+          secretName: striim-secret
 status: {}
 ---
 

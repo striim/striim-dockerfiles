@@ -3,16 +3,71 @@
 # Striim Cluster Node
 #
 
-cd "/opt/striim"
+STRIIM_RPM_TAG=$1
+SERVER_SCRIPT="/opt/striim/bin/server.sh"
 
-if [[ "$1" == "start" ]]; then
-    export NO_DERBY=1
-    if [ -f /opt/striim/conf/startUp.properties ]; then
+if [ ! -f "${SERVER_SCRIPT}" ]; then
+
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Striim not installed, installing Striim..."
+   # Install striim-node
+   sudo dpkg -i /tmp/"striim-node-${STRIIM_RPM_TAG}-Linux.deb" && sudo rm -rf /tmp/"striim-node-${STRIIM_RPM_TAG}-Linux.deb"
+   
+   # Make sure the owner and group for all files are striim	
+   sudo chown -R striim:striim /opt/striim
+	
+   if [ -f /opt/striim/conf/startUp.properties ]; then
       /opt/striim/bin/createStriimProperties.sh
-    fi
-    if [ ! -f /opt/striim/conf/log4j.server.properties ]; then
+      propsExitCode="$?"
+      if [ $propsExitCode != 0 ]; then
+         exit 1
+      fi
+      
+      date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+      echo "$date : Configured Striim server properties."
+   fi
+   if [ -f /opt/striim/conf/log4j.server.properties ]; then
       /opt/striim/bin/createLog4jServerProps.sh
-    fi
-    export CLASSPATH="/opt/striim/extlib/*"
-    echo -e "\n\n\n" | `dirname $0`/../bin/server.sh ${WA_OPTS}
+      propsExitCode="$?"
+      if [ $propsExitCode != 0 ]; then
+         exit 1
+      fi
+      
+      date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+      echo "$date : Configured Striim server logging."
+   fi
+
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Configuration of Striim completed."
+   
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Launching Striim."
+else
+   date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+   echo "$date : Found existing install, starting Striim."
 fi
+
+
+export NO_DERBY=1
+export CLASSPATH="/opt/striim/extlib/*"
+    
+# Start server as striim user
+echo -e "\n\n\n" | /opt/striim/bin/server.sh ${WA_OPTS} &> /opt/striim/logs/striim-node.log &
+
+EXPECTED_WRITE_INTERVAL_SECONDS=3
+FILE=/opt/striim/logs/striim-node.log
+
+while : ; do
+    date=`date +"%a %b %d %H:%M:%S UTC %Y"`
+    echo "$date : Waiting for server to start."
+    omod=$(stat -c %Y $FILE)
+    
+    sleep $EXPECTED_WRITE_INTERVAL_SECONDS
+    nmod=$(stat -c %Y $FILE)
+    
+    if [[ $omod == $nmod ]] ; then
+        break
+    fi
+done
+
+tail -f /opt/striim/logs/striim-node.log
