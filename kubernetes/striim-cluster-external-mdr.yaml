@@ -84,7 +84,7 @@ spec:
         - name: STRIIM_METADATAREPO_USER
           value: "waction"
         - name: STRIIM_L4J_ROOT_LOGGER
-          value: "warn"
+          value: "info"
         - name: STRIIM_L4J_MAX_FILE_SIZE
           value: "100MB"
         - name: STRIIM_L4J_MAX_BACKUP_IDX

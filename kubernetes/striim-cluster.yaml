@@ -137,7 +137,7 @@ spec:
         - name: STRIIM_MAX_MEMORY
           value: "4096m"
         - name: STRIIM_L4J_ROOT_LOGGER
-          value: "warn"
+          value: "info"
         - name: STRIIM_L4J_MAX_FILE_SIZE
           value: "100MB"
         - name: STRIIM_L4J_MAX_BACKUP_IDX
