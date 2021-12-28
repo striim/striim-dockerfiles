@@ -99,6 +99,24 @@ spec:
         ports:
         - containerPort: 9080
         resources: {}
+        readinessProbe:
+            httpGet:
+              path: /
+              port: 9080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+        livenessProbe:
+            httpGet:
+              path: /
+              port: 9080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+        startupProbe:
+            httpGet:
+              path: /
+              port: 9080
+            failureThreshold: 10
+            periodSeconds: 10
         volumeMounts:
         - mountPath: /opt/striim/extlib
           name: striim-extlib-storage
