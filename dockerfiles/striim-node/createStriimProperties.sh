@@ -189,6 +189,21 @@ else
 	if [[ ! -z "${STRIIM_EVICTTHRESHOLD}" ]]; then
 	  sed -i -e s#\\#.*EvictThreshold\=.*#EvictThreshold\=${STRIIM_EVICTTHRESHOLD}#g $STRIIM_CONF_FILE
 	fi
+	if [[ ! -z "${STRIIM_K8S_CLUSTER}" ]]; then
+	  sed -i -e s#\\#.*IsK8SCluster\=.*#IsK8SCluster\=${STRIIM_K8S_CLUSTER}#g $STRIIM_CONF_FILE
+	fi
+	if [[ ! -z "${STRIIM_NODE_NAME}" ]]; then
+          echo "striim.node.server.name=${STRIIM_NODE_NAME}" >>$STRIIM_CONF_FILE
+        fi
+	if [[ ! -z "${STRIIM_K8_CLUSTER}" ]]; then
+          echo "striim.cluster.enable-k8sClustering=${STRIIM_K8_CLUSTER}" >>$STRIIM_CONF_FILE
+        fi
+	if [[ ! -z "${STRIIM_K8_SERVICEDNS}" ]]; then
+          echo "striim.cluster.k8s.serviceDNS=${STRIIM_K8_SERVICEDNS}" >>$STRIIM_CONF_FILE
+        fi
+	if [[ ! -z "${STRIIM_K8_SERVICEDNS_TIMEOUT}" ]]; then
+          echo "striim.cluster.k8s.serviceDNSTimeout=${STRIIM_K8_SERVICEDNS_TIMEOUT}" >>$STRIIM_CONF_FILE
+        fi
 fi
    
 
